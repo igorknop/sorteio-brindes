@@ -1,0 +1,66 @@
+html {
+  background-color: black;
+  color: white;
+  font-family: sans-serif;
+  font-size: 0.8em;
+}
+
+
+html {
+  background-image: url("../pattern-with-deformed-shapes.svg.png");
+}
+
+main {
+  text-align: center;
+  display: grid;
+  grid-template-columns: 2;
+  grid-template-rows: 3;
+  margin: auto;
+  max-width: 500px;
+}
+
+section:nth-child(1) {
+  grid-row: 1;
+  grid-column-end: span 2;
+}
+
+section:nth-child(2), section:nth-child(3) {
+  grid-row: 2;
+}
+
+section:nth-child(4) {
+  grid-row: 3;
+  grid-column-end: span 2;
+}
+
+h1, button {
+  font-size: 1.2em;
+  margin: 0.5em;
+  font-weight: bold;
+}
+
+textarea {
+  border: 1px solid lightgray;
+  background-color: rgba(0, 50, 0, 0.5);
+  color: white;
+  padding: 0.05em;
+  width: 100%;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 1em 0;
+}
+
+li {
+  display: flex;
+}
+
+li div {
+  width: 50%;
+  border: 1px solid lightgray;
+  background-color: rgba(0, 50, 0, 0.5);
+  color: white;
+  padding: 0.05em;
+}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sorteio Organizadores</title>
+  <link rel="stylesheet" href="css/master.css">
+</head>
+
+<body>
+  <main>
+    <section>
+    <img src="tabletopweekendbr2018-160.png" />
+    </section>
+    <section>
+      <h1>Participantes</h1>
+      <textarea cols="15" rows="10" placeholder="Evento MIN MAX"></textarea>
+    </section>
+    <section>
+      <h1>Brindes</h1>
+      <textarea cols="15" rows="10" placeholder="ITEM"></textarea>
+    </section>
+    <section>
+      <button>Sortear!</button>
+      <ul>
+      </ul>
+    </section>
+    <script>
+    var part = document.getElementsByTagName('textarea')[0];
+    var prem = document.getElementsByTagName('textarea')[1];
+    var btn = document.getElementsByTagName('button')[0];
+    var ul = document.getElementsByTagName('ul')[0];
+    var eventos = [];
+    var participantes = [];
+    var premios = [];
+    var resultado = [];
+    btn.addEventListener('click',function(e) {
+      ul.innerHTML = "";
+      eventos = [];
+      participantes = [];
+      premios = [];
+      resultado = [];
+      var strPar = part.value;
+      var strPre = prem.value;
+      var strsPre = strPre.split("\n");
+      for (var i = 0; i < strsPre.length; i++) {
+        if(strsPre[i]) premios.push(strsPre[i]);
+      }
+      var regPar = /(.+) (\d+) (\d+)/;
+      var linPar = strPar.split("\n");
+      for (var i = 0; i < linPar.length; i++) {
+        var line = linPar[i];
+        var parRes = line.match(regPar);
+        if(!parRes) continue;
+        var par = {
+          nome: parRes[1],
+          start: 1*parRes[2],
+          end: 1*parRes[3]
+        }
+        eventos.push(par);
+      }
+      for (var i = 0; i < eventos.length; i++) {
+        var evento = eventos[i];
+        for(var j = evento.start; j<=evento.end; j++){
+          participantes.push(evento.nome+" "+j);
+        }
+      }
+      for (var i = 0; i < premios.length; i++) {
+        var premio = premios[i];
+        var indice = Math.floor(participantes.length*Math.random()|0);
+        var vencedor = participantes.splice(indice,1);
+        resultado.push({
+          "premio": premio,
+          "vencedor": vencedor[0]
+        })
+      }
+      for (var i = 0; i < resultado.length; i++) {
+        var itemSorteado = resultado[i];
+        var li = document.createElement("li");
+        li.innerHTML = "<div>"+itemSorteado.premio+"</div><div> "+itemSorteado.vencedor+"</div>";
+        ul.appendChild(li);
+      }
+    })
+    </script>
+  </main>
+</body>
+
+</html>
