@@ -11,42 +11,60 @@
 <body>
   <main>
     <section>
-    <img src="tabletopweekendbr2018-160.png" />
+    <img src="tabletopweekendbr.png" width="100%"/>
     </section>
     <section>
       <h1>Participantes</h1>
-      <textarea cols="15" rows="10" placeholder="Evento MIN MAX"></textarea>
+      <textarea cols="15" rows="10" placeholder="Evento MIN MAX">Evento1 1 10
+Evento2 5 20
+Evento3 1 5
+      </textarea>
     </section>
     <section>
       <h1>Brindes</h1>
-      <textarea cols="15" rows="10" placeholder="ITEM"></textarea>
+      <textarea cols="15" rows="10" placeholder="ITEM">Brinde1
+Brinde2
+Brinde3
+Brinde4
+Brinde5
+Brinde6
+Brinde7
+Brinde8
+Brinde9
+Brinde10
+</textarea>
     </section>
     <section>
       <button>Sortear!</button>
-      <ul>
-      </ul>
+      <ol>
+      </ol>
     </section>
     <script>
     var part = document.getElementsByTagName('textarea')[0];
     var prem = document.getElementsByTagName('textarea')[1];
     var btn = document.getElementsByTagName('button')[0];
-    var ul = document.getElementsByTagName('ul')[0];
-    var eventos = [];
+    var ol = document.getElementsByTagName('ol')[0];
+    var eventos = {};
     var participantes = [];
-    var premios = [];
+    var participantesPorEvento = {};
+    var brindes = [];
     var resultado = [];
     btn.addEventListener('click',function(e) {
-      ul.innerHTML = "";
-      eventos = [];
+      ol.innerHTML = "";
+      eventos = {};
       participantes = [];
-      premios = [];
+      brindes = [];
       resultado = [];
       var strPar = part.value;
       var strPre = prem.value;
+
+      //Monta lista de Brindes
       var strsPre = strPre.split("\n");
       for (var i = 0; i < strsPre.length; i++) {
-        if(strsPre[i]) premios.push(strsPre[i]);
+        if(strsPre[i]) brindes.push(strsPre[i]);
       }
+
+      //Monta lista de eventos e participantes
       var regPar = /(.+) (\d+) (\d+)/;
       var linPar = strPar.split("\n");
       for (var i = 0; i < linPar.length; i++) {
@@ -56,32 +74,95 @@
         var par = {
           nome: parRes[1],
           start: 1*parRes[2],
-          end: 1*parRes[3]
+          end: 1*parRes[3],
+          participantes: []
         }
-        eventos.push(par);
+        eventos[par.nome] =  par;
       }
-      for (var i = 0; i < eventos.length; i++) {
-        var evento = eventos[i];
-        for(var j = evento.start; j<=evento.end; j++){
-          participantes.push(evento.nome+" "+j);
+      for (eventoK in eventos) {
+        var evento = eventos[eventoK];
+        for(var j = evento.start; j<= evento.end; j++){
+          evento.participantes.push(evento.nome+" "+j)
+          //participantes.push(evento.nome+" "+j);
         }
       }
-      for (var i = 0; i < premios.length; i++) {
-        var premio = premios[i];
+
+      //Embaralha Brindes
+      brindes = shuffle(brindes);
+
+      //Realiza 1 sorteio por evento
+      for (eventoK in eventos) {
+        var evento = eventos[eventoK];
+        var indiceBrinde = Math.floor(brindes.length*Math.random()|0);
+        var indiceParticipante = Math.floor(evento.participantes.length*Math.random()|0);
+        var premio =  brindes.splice(indiceBrinde, 1);
+        var vencedor = evento.participantes.splice(indiceParticipante, 1);
+        console.log(premio+" sorteado para "+vencedor[0]+" no sorteio por evento");
+        resultado.push({
+          "premio": premio[0],
+          "vencedor": vencedor[0]
+        })
+      }
+
+
+
+      // Monta lista geral de participantes
+      for (eventoK in eventos) {
+        var evento = eventos[eventoK];
+        for (participante of evento.participantes) {
+          participantes.push(participante);
+        }
+      }
+
+      //Embaralha Brindes e Participantes
+      brindes = shuffle(brindes);
+      participantes = shuffle(participantes);
+
+      // Faz o sorteio na lista geral de participantes
+      for (var i = 0; i < brindes.length; i++) {
+        var premio = brindes[i];
         var indice = Math.floor(participantes.length*Math.random()|0);
         var vencedor = participantes.splice(indice,1);
+        console.log(premio+" sorteado para "+vencedor[0]+" no sorteio geral");
         resultado.push({
           "premio": premio,
           "vencedor": vencedor[0]
         })
       }
+
+      // Imprime lista de resultados
+      resultado.sort(function(a,b){
+        var nameA = a.premio.toUpperCase(); // ignore upper and lowercase
+        var nameB = b.premio.toUpperCase(); // ignore upper and lowercase
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+
+        // names must be equal
+        return 0; });
       for (var i = 0; i < resultado.length; i++) {
         var itemSorteado = resultado[i];
         var li = document.createElement("li");
-        li.innerHTML = "<div>"+itemSorteado.premio+"</div><div> "+itemSorteado.vencedor+"</div>";
-        ul.appendChild(li);
+        li.innerHTML = "<div>"+(i+1)+": "+itemSorteado.premio+"</div><div> "+itemSorteado.vencedor+"</div>";
+        ol.appendChild(li);
       }
     })
+
+    function shuffle(array) {
+      var currentIndex = array.length, temporaryValue, randomIndex;
+      while (0 !== currentIndex) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+      }
+      return array;
+    }
+
     </script>
   </main>
 </body>
